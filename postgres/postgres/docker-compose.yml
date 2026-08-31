@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: myapp_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: mybd
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - "/home/schweppa/work/postgres/postgres/migrations:/docker-entrypoint-initdb.d"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mybd"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app_network
+    restart: unless-stopped
+
+  app:
+    build:
+      context: "/home/schweppa/work/postgres/postgres"
+      dockerfile: Dockerfile
+    container_name: myapp_go
+    ports:
+      - "9055:9055"
+    environment:
+      - bd=postgres://postgres:123@postgres:5432/mybd
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app_network
+    restart: unless-stopped
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
