@@ -1,4 +1,17 @@
 ---
+- name: Create project directory on remote
+  file:
+    path: "{{ project_path }}"
+    state: directory
+    mode: '0755'
+
+- name: Copy project source code to remote
+  synchronize:
+    src: "{{ playbook_dir }}/../../postgres/postgres/"
+    dest: "{{ project_path }}/"
+    checksum: yes
+  when: ansible_connection != "local"
+
 - name: Copy docker-compose.yml from template
   template:
     src: docker-compose.yml.j2
