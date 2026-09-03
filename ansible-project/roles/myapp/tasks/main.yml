@@ -1,13 +1,13 @@
 ---
-- name: Create project directory on remote
+- name: Create app directory
   file:
     path: "{{ project_path }}"
     state: directory
     mode: '0755'
 
-- name: Copy project source code to remote
+- name: Copy project source code
   synchronize:
-    src: "{{ playbook_dir }}/../../postgres/postgres/"
+    src: "{{ playbook_dir }}/../postgres/postgres/"
     dest: "{{ project_path }}/"
     checksum: yes
   when: ansible_connection != "local"
@@ -17,7 +17,6 @@
     src: docker-compose.yml.j2
     dest: "{{ project_path }}/docker-compose.yml"
     mode: '0644'
-  tags: [config]
 
 - name: Start containers
   command:
@@ -30,3 +29,9 @@
     cmd: docker compose down
     chdir: "{{ project_path }}"
   tags: [stop, never]
+
+- name: Recreate
+  command:
+    cmd: docker compose up -d --force-recreate
+    chdir: "{{ project_path }}"
+  tags: [restart, never]

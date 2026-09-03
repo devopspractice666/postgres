@@ -1,25 +1,6 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: {{ app_name }}_postgres
-    environment:
-      POSTGRES_USER: {{ db_user }}
-      POSTGRES_PASSWORD: {{ db_password }}
-      POSTGRES_DB: {{ db_name }}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - "{{ project_path }}/migrations:/docker-entrypoint-initdb.d"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U {{ db_user }} -d {{ db_name }}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - app_network
-    restart: unless-stopped
-
   app:
     build:
       context: "{{ project_path }}"
@@ -28,10 +9,7 @@ services:
     ports:
       - "{{ app_port }}:{{ app_port }}"
     environment:
-      - bd=postgres://{{ db_user }}:{{ db_password }}@postgres:{{ db_port }}/{{ db_name }}
-    depends_on:
-      postgres:
-        condition: service_healthy
+      - bd=postgres://{{ db_user }}:{{ db_password }}@{{ db_host }}:{{ db_port }}/{{ db_name }}
     networks:
       - app_network
     restart: unless-stopped
@@ -39,6 +17,3 @@ services:
 networks:
   app_network:
     driver: bridge
-
-volumes:
-  postgres_data:

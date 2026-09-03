@@ -1,0 +1,34 @@
+---
+- name: Create database directory
+  file:
+    path: "{{ db_project_path }}"
+    state: directory
+    mode: '0755'
+
+- name: Copy docker-compose.yml from template
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ db_project_path }}/docker-compose.yml"
+    mode: '0644'
+
+- name: Start database containers
+  command:
+    cmd: docker compose up -d
+    chdir: "{{ db_project_path }}"
+  tags: [start]
+
+- name: Stop database containers
+  command:
+    cmd: docker compose down
+    chdir: "{{ db_project_path }}"
+  tags: [stop, never]
+
+- name: Recreate
+  command:
+    cmd: docker compose up -d --force-recreate
+    chdir: "{{ db_project_path }}"
+  tags: [restart, never]
+
+- name: Show container status
+  debug:
+    msg: "PostgreSQL started on {{ db_host }}:{{ db_port }}"

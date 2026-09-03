@@ -1,4 +1,9 @@
 ---
+- name: Deploy PostgreSQL database
+  hosts: db_host
+  roles:
+    - db
+
 - name: Deploy application
   hosts: app_host
   roles:

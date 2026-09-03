@@ -1,13 +1,12 @@
 ---
-# Project paths (universal)
 project_path: "/home/{{ ansible_user }}/work/postgres/postgres"
-
-# App settings
 app_name: "myapp"
 app_port: 9055
 
-# Database settings
-db_name: "mybd"
+
+db_project_path: "/home/{{ ansible_user }}/work/postgres/db"
+db_container_name: "postgres"
+db_port: 5433
 db_user: "postgres"
-db_host: "postgres"
-db_port: 5432
+db_name: "mydb"
+db_host: "10.160.14.77"
