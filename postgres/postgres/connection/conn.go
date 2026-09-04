@@ -23,6 +23,6 @@ func GetConn() *pgx.Conn {
 		panic(err)
 	}
 
-	fmt.Println("Подключение к бд успешно")
+	fmt.Println("Подключение к бд успешно, ожидание запросов")
 	return conn
 }

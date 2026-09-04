@@ -15,23 +15,23 @@
 - name: Copy docker-compose.yml from template
   template:
     src: docker-compose.yml.j2
-    dest: "{{ project_path }}/docker-compose.yml"
+    dest: "{{ project_path }}/postgres/docker-compose.yml"
     mode: '0644'
 
 - name: Start containers
   command:
     cmd: docker compose up -d
-    chdir: "{{ project_path }}"
+    chdir: "{{ project_path }}/postgres"
   tags: [start]
 
 - name: Stop containers
   command:
     cmd: docker compose down
-    chdir: "{{ project_path }}"
+    chdir: "{{ project_path }}/postgres"
   tags: [stop, never]
 
 - name: Recreate
   command:
     cmd: docker compose up -d --force-recreate
-    chdir: "{{ project_path }}"
+    chdir: "{{ project_path }}/postgres"
   tags: [restart, never]

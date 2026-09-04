@@ -8,18 +8,31 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
+
 	conn := GetConn()
 	router := mux.NewRouter()
 	database := &Postgres{Conn: conn}
 	ctx := context.Background()
 	InitTable(ctx, conn)
-	router.Path("/users").Methods("POST").HandlerFunc(database.Adduser)
-	router.Path("/users").Methods("DELETE").HandlerFunc(database.RemoveUserById)
-	router.Path("/users/{id}").Methods("GET").HandlerFunc(database.GetUserById)
-	router.Path("/users").Methods("PATCH").HandlerFunc(database.ChangeInfoById)
-	http.ListenAndServe(":9055", router)
 
+	router.Path("/users").Methods("POST").Handler(
+		InstrumentHandler(database.Adduser, "POST", "/users"),
+	)
+	router.Path("/users").Methods("DELETE").Handler(
+		InstrumentHandler(database.RemoveUserById, "DELETE", "/users"),
+	)
+	router.Path("/users/{id}").Methods("GET").Handler(
+		InstrumentHandler(database.GetUserById, "GET", "/users/{id}"),
+	)
+	router.Path("/users").Methods("PATCH").Handler(
+		InstrumentHandler(database.ChangeInfoById, "PATCH", "/users"),
+	)
+
+	router.Path("/metrics").Methods("GET").Handler(promhttp.Handler())
+
+	http.ListenAndServe(":9055", router)
 }
