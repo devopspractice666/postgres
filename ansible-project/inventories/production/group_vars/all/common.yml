@@ -1,5 +1,5 @@
 ---
-project_path: "/home/{{ ansible_user }}/work/postgres/postgres"
+project_path: "/home/{{ ansible_user }}/work/postgres/project/application"
 app_name: "myapp"
 app_port: 9055
 

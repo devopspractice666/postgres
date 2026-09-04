@@ -7,7 +7,7 @@
 
 - name: Copy project source code
   synchronize:
-    src: "/home/schweppa/work/postgres/postgres/"
+    src: "/home/schweppa/work/postgres/project/application/"
     dest: "{{ project_path }}/"
     checksum: yes
   when: ansible_connection != "local"
