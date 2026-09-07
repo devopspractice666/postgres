@@ -1,0 +1,4 @@
+---
+monitoring_dir: "/home/{{ ansible_user }}/work/monitoring"
+prometheus_port: 9090
+grafana_port: 3000

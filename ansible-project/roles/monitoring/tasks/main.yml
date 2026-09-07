@@ -1,0 +1,30 @@
+---
+- name: Create monitoring directory
+  file:
+    path: "{{ monitoring_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Copy prometheus.yml from template
+  template:
+    src: prometheus.yml.j2
+    dest: "{{ monitoring_dir }}/prometheus.yml"
+    mode: '0644'
+
+- name: Copy docker-compose.yml from template
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ monitoring_dir }}/docker-compose.yml"
+    mode: '0644'
+
+- name: Start monitoring stack
+  command:
+    cmd: docker compose up -d
+    chdir: "{{ monitoring_dir }}"
+  tags: [start]
+
+- name: Stop monitoring stack
+  command:
+    cmd: docker compose down
+    chdir: "{{ monitoring_dir }}"
+  tags: [stop, never]
