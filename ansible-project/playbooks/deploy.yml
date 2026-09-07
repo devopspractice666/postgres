@@ -14,3 +14,9 @@
   become: true
   roles:
     - node_exporter
+
+- name: Deploy Postgres Exporter on database servers
+  hosts: db_host
+  become: true
+  roles:
+    - postgres_exporter
