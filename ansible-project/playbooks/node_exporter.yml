@@ -1,0 +1,6 @@
+---
+- name: Deploy Node Exporter on all servers
+  hosts: all
+  become: true
+  roles:
+    - node_exporter
