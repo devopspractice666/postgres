@@ -39,6 +39,16 @@ func main() {
 
 	router.Path("/metrics").Methods("GET").Handler(promhttp.Handler())
 
+	router.Path("/health").Methods("GET").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if err := conn.Ping(r.Context()); err != nil {
+			w.WriteHeader(503)
+			w.Write([]byte("БД НЕДОСТУПНА!"))
+			return
+		}
+		w.WriteHeader(200)
+		w.Write([]byte("OK"))
+	})
+
 	srv := &http.Server{
 		Addr:    ":9055",
 		Handler: router,
