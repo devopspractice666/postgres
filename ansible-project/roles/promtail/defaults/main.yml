@@ -1,0 +1,7 @@
+---
+promtail_version: "3.0.0"
+promtail_arch: "amd64"
+promtail_port: 9080
+promtail_bin: "/usr/local/bin/promtail"
+promtail_config_dir: "/etc/promtail"
+promtail_user: "promtail"

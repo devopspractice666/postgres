@@ -1,0 +1,14 @@
+[Unit]
+Description=Promtail log collector
+After=network.target
+
+[Service]
+Type=simple
+ExecStart={{ promtail_bin }} -config.file={{ promtail_config_dir }}/promtail.yml
+Restart=always
+RestartSec=10
+NoNewPrivileges=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,6 @@
+---
+- name: Deploy Promtail on app servers
+  hosts: app_host
+  become: yes
+  roles:
+    - promtail
