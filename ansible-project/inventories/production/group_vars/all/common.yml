@@ -9,5 +9,5 @@ db_container_name: "postgres"
 db_port: 5433
 db_user: "postgres"
 db_name: "mydb"
-db_host: "192.168.115.83"
-monitor_host: "10.160.2.96"
+db_host: "10.160.2.96"
+monitoring_host: "10.160.2.96"
