@@ -3,7 +3,7 @@ package simple
 import (
 	"context"
 	"errors"
-	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -27,10 +27,10 @@ func InitTable(ctx context.Context, conn *pgx.Conn) error {
 	`
 	_, err := conn.Exec(ctx, sqlQUery)
 	if err != nil {
-		fmt.Println("Ошибка создания базы данных")
+		slog.Error("Не удалось создать таблицу users", "error", err)
 		return err
 	}
-	fmt.Println("База данных инициализирована успешно")
+	slog.Info("Таблица users инициализирована успешно")
 	return nil
 }
 
@@ -44,7 +44,7 @@ func Delete(ctx context.Context, conn *pgx.Conn, id int) (string, error) {
 	`
 	reply, err := conn.Exec(ctx, sqlQuery, id)
 	if err != nil {
-		fmt.Println(err)
+		slog.Error("Ошибка выполнения DELETE", "error", err, "id", id)
 		return "", err
 	}
 	str := reply.String()
@@ -61,6 +61,7 @@ func Insert(ctx context.Context, conn *pgx.Conn, name, info string) (string, err
 	`
 	reply, err := conn.Exec(ctx, sqlQuery, name, info)
 	if err != nil {
+		slog.Error("Ошибка выполнения INSERT", "error", err, "name", name)
 		return "ОШИБКА", err
 	}
 	str := reply.String()
@@ -77,9 +78,8 @@ func UpdateByID(ctx context.Context, conn *pgx.Conn, id int, newInfo string) (st
 	where id = $1
 	`
 	reply, err := conn.Exec(ctx, sqlQuery, id, newInfo)
-
 	if err != nil {
-		fmt.Println(err)
+		slog.Error("Ошибка выполнения UPDATE", "error", err, "id", id)
 		return "", err
 	}
 	if reply.RowsAffected() == 0 {
@@ -100,7 +100,7 @@ func SelectByID(ctx context.Context, conn *pgx.Conn, id int) (*User, error) {
 	`
 	rows, err := conn.Query(ctx, sqlQuery, id)
 	if err != nil {
-		fmt.Println(err)
+		slog.Error("Ошибка выполнения SELECT", "error", err, "id", id)
 		return nil, err
 	}
 	defer rows.Close()

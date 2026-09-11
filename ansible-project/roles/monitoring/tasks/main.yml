@@ -26,7 +26,7 @@
 
 - name: Start monitoring stack
   command:
-    cmd: docker compose up -d
+    cmd: docker compose up -d --build
     chdir: "{{ monitoring_dir }}"
   tags: [start]
 

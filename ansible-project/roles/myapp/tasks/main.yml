@@ -32,6 +32,6 @@
 
 - name: Recreate
   command:
-    cmd: docker compose up -d --force-recreate
+    cmd: docker compose up -d --force-recreate --build
     chdir: "{{ project_path }}/postgres"
   tags: [restart, never]
